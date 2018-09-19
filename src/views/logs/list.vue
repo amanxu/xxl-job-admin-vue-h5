@@ -4,6 +4,7 @@
       <el-col :span="24">
         <el-form :inline="true">
           <el-select size="small" v-model="queryParams.jobGroup" @change="groupChange" placeholder="请选择执行器">
+            <el-option value="" label="全部"></el-option>
             <el-option
               v-for="item in executors"
               :key="item.id"
@@ -12,6 +13,7 @@
             </el-option>
           </el-select>
           <el-select size="small" v-model="queryParams.jobId" placeholder="请选择作业">
+            <el-option value="" label="全部"></el-option>
             <el-option
               v-for="item in jobs"
               :key="item.id"
@@ -20,6 +22,7 @@
             </el-option>
           </el-select>
           <el-select size="small" v-model="queryParams.logStatus" placeholder="请选择日志状态">
+            <el-option value="" label="全部"></el-option>
             <el-option
               v-for="item in statusEnum"
               :key="item.code"
@@ -41,7 +44,18 @@
             <el-button type="primary" size="small" @click="getList">查询</el-button>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="clearFilterParam">清除</el-button>
+            <el-dropdown class="drop-down-view" size="small" @command="clearJobLogs">
+              <el-button type="primary">
+                清除日志<i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="1">一个月前</el-dropdown-item>
+                <el-dropdown-item command="2">三个月前</el-dropdown-item>
+                <el-dropdown-item command="3">六个月前</el-dropdown-item>
+                <el-dropdown-item command="4">一年之前</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            <!--<el-button type="primary" size="small" @click="clearFilterParam">清除</el-button>-->
           </el-form-item>
         </el-form>
       </el-col>
@@ -150,7 +164,7 @@
 <script>
   import {getToken} from '@/utils/auth' // 验权
   import {getGroupListAll} from "../../api/group";
-  import {getJobDetail, getLogsList, stopJob} from "../../api/logs";
+  import {getJobDetail, getLogsList, stopJob, clearLogs} from "../../api/logs";
   import {getJobsByGroup} from "../../api/jobs";
 
   export default {
@@ -188,6 +202,13 @@
           jobDesc: '',
           author: '',
           triggerMsg: '',
+        },
+        logTimeArr: ['一个月前', '三个月前', '六个月前', '一年之前'],
+        clearLogParams: {
+          jobGroup: null,
+          jobId: null,
+          logStatus: null,
+          type: null
         }
       }
     },
@@ -282,6 +303,40 @@
         this.queryParams.logStatus = null
         this.queryParams.filterTime = []
       },
+      clearJobLogs(command) {
+        this.$confirm(
+          '您确认清除' + this.logTimeArr[command - 1] + '的日志？',
+          '提示',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        ).then(response => {
+          this.exeClearLogs(command)
+        }).catch(reject => console.log(reject))
+      },
+      exeClearLogs(command) {
+        this.clearLogParams.jobGroup = this.queryParams.jobGroup
+        this.clearLogParams.jobId = this.queryParams.jobId
+        this.clearLogParams.logStatus = this.queryParams.logStatus
+        this.clearLogParams.type = command
+        clearLogs(this.clearLogParams).then(res => {
+          if (res.code === 200) {
+            this.$message({
+              message: '清除成功',
+              type: 'success',
+            })
+          } else {
+            this.$message({
+              message: '清除失败',
+              type: 'warning',
+            })
+          }
+        }).catch(function (err) {
+          console.log(err.message())
+        })
+      },
       handleFilter() {
         this.queryParams.start = 1
         this.getList()
@@ -323,6 +378,29 @@
 
   .top {
     padding: 10px;
+  }
+
+  .el-form--inline .el-form-item {
+    margin-right: 2px;
+  }
+
+  .drop-down-view {
+    .el-dropdown {
+      vertical-align: top;
+    }
+
+    .el-dropdown + .el-dropdown {
+      margin-left: 15px;
+    }
+
+    .el-icon-arrow-down {
+      font-size: 12px;
+    }
+
+    .el-button {
+      padding: 8px 7px;
+    }
+
   }
 
   .el-button--mini {

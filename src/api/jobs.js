@@ -1,8 +1,9 @@
 import request from '@/utils/request'
+import {proxyPrefix} from '../utils/index'
 
 export function getJobPageList(params) {
   return request({
-    url: '/jobinfo/pageList',
+    url: proxyPrefix + '/jobinfo/pageList',
     method: 'get',
     params: params
   })
@@ -10,7 +11,7 @@ export function getJobPageList(params) {
 
 export function getJobsByGroup(groupId) {
   return request({
-    url: '/jobinfo/jobsByGroup',
+    url: proxyPrefix + '/jobinfo/jobsByGroup',
     method: 'get',
     params: {groupId: groupId}
   })
@@ -18,7 +19,7 @@ export function getJobsByGroup(groupId) {
 
 export function create(params) {
   return request({
-    url: '/jobinfo/add',
+    url: proxyPrefix + '/jobinfo/add',
     method: 'post',
     data: params
   })
@@ -26,7 +27,7 @@ export function create(params) {
 
 export function remove(id) {
   return request({
-    url: '/jobinfo/remove',
+    url: proxyPrefix + '/jobinfo/remove',
     method: 'get',
     params: {id: id}
   })
@@ -34,7 +35,7 @@ export function remove(id) {
 
 export function update(params) {
   return request({
-    url: '/jobinfo/update',
+    url: proxyPrefix + '/jobinfo/update',
     method: 'post',
     data: params
   })
@@ -42,7 +43,7 @@ export function update(params) {
 
 export function jobTrigger(id) {
   return request({
-    url: '/jobinfo/trigger',
+    url: proxyPrefix + '/jobinfo/trigger',
     method: 'get',
     params: {id: id}
   })
@@ -50,7 +51,7 @@ export function jobTrigger(id) {
 
 export function jobResume(id) {
   return request({
-    url: '/jobinfo/resume',
+    url: proxyPrefix + '/jobinfo/resume',
     method: 'get',
     params: {id: id}
   })
@@ -58,7 +59,7 @@ export function jobResume(id) {
 
 export function jobPause(id) {
   return request({
-    url: '/jobinfo/pause',
+    url: proxyPrefix + '/jobinfo/pause',
     method: 'get',
     params: {id: id}
   })

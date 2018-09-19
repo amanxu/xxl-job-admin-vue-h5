@@ -1,8 +1,9 @@
 import request from '@/utils/request'
+import {proxyPrefix} from '../utils/index'
 
 export function getLogsList(params) {
   return request({
-    url: '/joblog/pageList',
+    url: proxyPrefix + '/joblog/pageList',
     method: 'post',
     params: params
   })
@@ -10,7 +11,7 @@ export function getLogsList(params) {
 
 export function stopJob(id) {
   return request({
-    url: '/joblog/logKill',
+    url: proxyPrefix + '/joblog/logKill',
     method: 'get',
     params: {id: id}
   })
@@ -18,9 +19,17 @@ export function stopJob(id) {
 
 export function getJobDetail(id) {
   return request({
-    url: '/joblog/logDetailPage',
+    url: proxyPrefix + '/joblog/logDetailPage',
     method: 'get',
     params: {id: id}
+  })
+}
+
+export function clearLogs(params) {
+  return request({
+    url: proxyPrefix + '/joblog/clearLog',
+    method: 'get',
+    params: params
   })
 }
 

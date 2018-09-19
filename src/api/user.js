@@ -1,8 +1,9 @@
 import request from '@/utils/request'
+import {proxyPrefix} from '../utils/index'
 
 export function getUserList(params) {
   return request({
-    url: '/user/list',
+    url: proxyPrefix +'/user/list',
     method: 'post',
     data: params
   })
@@ -10,7 +11,7 @@ export function getUserList(params) {
 
 export function create(params) {
   return request({
-    url: '/user/create',
+    url: proxyPrefix +'/user/create',
     method: 'post',
     data: params
   })
@@ -18,7 +19,7 @@ export function create(params) {
 
 export function detail(id) {
   return request({
-    url: '/user/detail',
+    url: proxyPrefix +'/user/detail',
     method: 'get',
     params: {id}
   })
@@ -29,7 +30,7 @@ export function getUserInfo(token) {
     token: token
   }
   return request({
-    url: '/user/tokenUserInfo',
+    url: proxyPrefix +'/user/tokenUserInfo',
     method: 'post',
     data
   })
@@ -38,7 +39,7 @@ export function getUserInfo(token) {
 
 export function batchDel(id) {
   return request({
-    url: '/user/batchDel',
+    url: proxyPrefix +'/user/batchDel',
     method: 'get',
     params: {id: id}
   })
@@ -46,7 +47,7 @@ export function batchDel(id) {
 
 export function update(params) {
   return request({
-    url: '/user/update',
+    url: proxyPrefix +'/user/update',
     method: 'post',
     data: params
   })

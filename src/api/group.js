@@ -1,8 +1,9 @@
 import request from '@/utils/request'
+import {proxyPrefix} from '../utils/index'
 
 export function getGroupList(params) {
   return request({
-    url: '/jobgroup/list',
+    url: proxyPrefix + '/jobgroup/list',
     method: 'post',
     data: params
   })
@@ -10,7 +11,7 @@ export function getGroupList(params) {
 
 export function getGroupListAll() {
   return request({
-      url: '/jobgroup/listAll',
+      url: proxyPrefix + '/jobgroup/listAll',
       method: 'get'
     }
   )
@@ -18,7 +19,7 @@ export function getGroupListAll() {
 
 export function create(params) {
   return request({
-    url: '/jobgroup/save',
+    url: proxyPrefix + '/jobgroup/save',
     method: 'post',
     data: params
   })
@@ -26,7 +27,7 @@ export function create(params) {
 
 export function remove(id) {
   return request({
-    url: '/jobgroup/remove',
+    url: proxyPrefix + '/jobgroup/remove',
     method: 'get',
     params: {id: id}
   })
@@ -34,7 +35,7 @@ export function remove(id) {
 
 export function update(params) {
   return request({
-    url: '/jobgroup/update',
+    url: proxyPrefix + '/jobgroup/update',
     method: 'post',
     data: params
   })

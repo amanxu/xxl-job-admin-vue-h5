@@ -1,8 +1,9 @@
-import request from '@/utils/request'
+import request from '../utils/request'
+import {proxyPrefix} from '../utils/index'
 
 export function getAuthList(params) {
   return request({
-    url: '/auth/list',
+    url: proxyPrefix + '/auth/list',
     method: 'post',
     data: params
   })
@@ -10,7 +11,7 @@ export function getAuthList(params) {
 
 export function authOperate(params) {
   return request({
-    url: '/auth/authOperate',
+    url: proxyPrefix + '/auth/authOperate',
     method: 'post',
     data: params
   })
@@ -18,7 +19,7 @@ export function authOperate(params) {
 
 export function detail(id) {
   return request({
-    url: '/user/detail',
+    url: proxyPrefix + '/user/detail',
     method: 'get',
     params: {id}
   })
@@ -26,7 +27,7 @@ export function detail(id) {
 
 export function batchDel(id) {
   return request({
-    url: '/user/batchDel',
+    url: proxyPrefix + '/user/batchDel',
     method: 'get',
     params: [id]
   })
@@ -34,7 +35,7 @@ export function batchDel(id) {
 
 export function update(params) {
   return request({
-    url: '/user/update',
+    url: proxyPrefix + '/user/update',
     method: 'post',
     data: params
   })

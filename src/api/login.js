@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import {proxyPrefix} from '../utils/index'
 
 export function login(account, pwd) {
   const data = {
@@ -6,7 +7,7 @@ export function login(account, pwd) {
     password: pwd,
   }
   return request({
-    url: '/login',
+    url: proxyPrefix + '/login',
     method: 'post',
     data
   })
@@ -17,7 +18,7 @@ export function getInfo(token) {
     token: token
   }
   return request({
-    url: '/user/tokenUserInfo',
+    url: proxyPrefix + '/user/tokenUserInfo',
     method: 'post',
     data
   })
@@ -25,7 +26,7 @@ export function getInfo(token) {
 
 export function logout(token) {
   return request({
-    url: '/logout',
+    url: proxyPrefix + '/logout',
     method: 'post'
   })
 }
