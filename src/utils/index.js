@@ -299,4 +299,4 @@ export function uniqueArr(arr) {
   return Array.from(new Set(arr))
 }
 
-export const proxyPrefix = '/xxl'
+export const proxyPrefix = ''

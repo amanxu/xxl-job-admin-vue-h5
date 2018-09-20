@@ -44,18 +44,7 @@
             <el-button type="primary" size="small" @click="getList">查询</el-button>
           </el-form-item>
           <el-form-item>
-            <el-dropdown class="drop-down-view" size="small" @command="clearJobLogs">
-              <el-button type="primary">
-                清除日志<i class="el-icon-arrow-down el-icon--right"></i>
-              </el-button>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="1">一个月前</el-dropdown-item>
-                <el-dropdown-item command="2">三个月前</el-dropdown-item>
-                <el-dropdown-item command="3">六个月前</el-dropdown-item>
-                <el-dropdown-item command="4">一年之前</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-            <!--<el-button type="primary" size="small" @click="clearFilterParam">清除</el-button>-->
+            <el-button type="primary" size="small" @click="clearJobLogs">清除日志</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -158,13 +147,63 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="清除执行器日志" :visible.sync="clearLogDialog" center>
+      <el-form :model="clearForm" :rules="rules" ref="clearForm">
+        <el-form-item class="clear-log-form-view" label="执行器" prop="jobGroup">
+          <el-select v-model="clearForm.jobGroup" @change="groupClearChange" placeholder="请选择执行器">
+            <el-option
+              v-for="item in executors"
+              :key="item.id"
+              :label="item.title"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item class="clear-log-form-view" label="作业名称" prop="jobId">
+          <el-select v-model="clearForm.jobId" placeholder="请选择作业">
+            <el-option
+              v-for="item in jobs"
+              :key="item.id"
+              :label="item.jobDesc"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item class="clear-log-form-view" label="时间段" prop="type">
+          <el-select v-model="clearForm.type" placeholder="请选择作业">
+            <el-option
+              v-for="item in logTimeEnum"
+              :key="item.code"
+              :label="item.msg"
+              :value="item.code">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item class="clear-log-form-view" label="状态" prop="logStatus">
+          <el-select size="small" v-model="clearForm.logStatus" placeholder="请选择日志状态">
+            <el-option label="全部" value=""></el-option>
+            <el-option
+              v-for="item in statusEnum"
+              :key="item.code"
+              :label="item.msg"
+              :value="item.code">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="clearLogDialog = false">取 消</el-button>
+        <el-button type="primary" @click="exeClearLogs">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
   import {getToken} from '@/utils/auth' // 验权
   import {getGroupListAll} from "../../api/group";
-  import {getJobDetail, getLogsList, stopJob, clearLogs} from "../../api/logs";
+  import {clearLogs, getJobDetail, getLogsList, stopJob} from "../../api/logs";
   import {getJobsByGroup} from "../../api/jobs";
 
   export default {
@@ -178,6 +217,7 @@
         jobs: [],
         dialogStatus: 'create',
         dialogFormVisible: false,
+        clearLogDialog: false,
         headers: {},
         modifyData: '',
         list: null,
@@ -203,13 +243,18 @@
           author: '',
           triggerMsg: '',
         },
-        logTimeArr: ['一个月前', '三个月前', '六个月前', '一年之前'],
-        clearLogParams: {
+        logTimeEnum: [{code: 1, msg: '一个月前'}, {code: 2, msg: '三个月前'}, {code: 3, msg: '六个月前'}, {code: 4, msg: '一年之前'}],
+        clearForm: {
           jobGroup: null,
           jobId: null,
           logStatus: null,
           type: null
-        }
+        },
+        rules: {
+          jobGroup: [{required: true, message: '请选择执行器', trigger: 'blur'}],
+          jobId: [{required: true, message: '请选择作业', trigger: 'blur'}],
+          type: [{required: true, message: '请选择时间段', trigger: 'blur'}]
+        },
       }
     },
     created() {
@@ -264,6 +309,19 @@
           })
         }
       },
+      groupClearChange() {
+        this.clearForm.jobId = null
+        if (this.clearForm.jobGroup !== null) {
+          getJobsByGroup(this.clearForm.jobGroup).then(res => {
+            const {code, content} = res
+            if (res.code === 200) {
+              this.jobs = content
+            }
+          }).catch(function (err) {
+            console.log(err.message)
+          })
+        }
+      },
       stopJob(id) {
         stopJob(id).then(res => {
           const {code, msg} = res
@@ -303,52 +361,46 @@
         this.queryParams.logStatus = null
         this.queryParams.filterTime = []
       },
-      clearJobLogs(command) {
-        this.$confirm(
-          '您确认清除' + this.logTimeArr[command - 1] + '的日志？',
-          '提示',
-          {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }
-        ).then(response => {
-          this.exeClearLogs(command)
-        }).catch(reject => console.log(reject))
+      clearJobLogs() {
+        this.clearLogDialog = true
       },
-      exeClearLogs(command) {
-        this.clearLogParams.jobGroup = this.queryParams.jobGroup
-        this.clearLogParams.jobId = this.queryParams.jobId
-        this.clearLogParams.logStatus = this.queryParams.logStatus
-        this.clearLogParams.type = command
-        clearLogs(this.clearLogParams).then(res => {
-          if (res.code === 200) {
-            this.$message({
-              message: '清除成功',
-              type: 'success',
-            })
-          } else {
-            this.$message({
-              message: '清除失败',
-              type: 'warning',
+      exeClearLogs() {
+        this.$refs['clearForm'].validate((valid) => {
+          if (valid) {
+            clearLogs(this.clearForm).then(res => {
+              if (res.code === 200) {
+                this.$message({
+                  message: '清除成功',
+                  type: 'success',
+                })
+                this.clearLogDialog = false
+              } else {
+                this.$message({
+                  message: '清除失败',
+                  type: 'warning',
+                })
+              }
+            }).catch(function (err) {
+              console.log(err.message())
             })
           }
-        }).catch(function (err) {
-          console.log(err.message())
         })
       },
       handleFilter() {
         this.queryParams.start = 1
         this.getList()
-      },
+      }
+      ,
       handleSizeChange(val) {
         this.queryParams.length = val
         this.getList()
-      },
+      }
+      ,
       handleCurrentChange(val) {
         this.queryParams.start = val
         this.getList()
-      },
+      }
+      ,
       handleRefresh() {
         this.list = null
         this.total = null
@@ -368,6 +420,12 @@
   }
 </style>
 <style rel="stylesheet/scss" lang="scss">
+  .clear-log-form-view {
+    .el-select {
+      width: 80%;
+    }
+  }
+
   .sucColor {
     color: seagreen;
   }

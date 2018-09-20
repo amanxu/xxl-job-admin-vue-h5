@@ -69,7 +69,7 @@
         :left-default-checked="[]"
         :right-default-checked="[]"
         :titles="['未分配', '已分配']"
-        :button-texts="['减', '增']"
+        :button-texts="['', '']"
         :format="{
         noChecked:'${total}',
         hasChecked: '${checked}/${total}'

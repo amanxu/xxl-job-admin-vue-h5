@@ -23,12 +23,12 @@
           登录
         </el-button>
       </el-form-item>
-      <!--<div style="color: white;font-size: 14px">
+      <div style="color: white;font-size: 14px">
         <p>超级管理员(超权限)：admin 密码：123456</p>
         <p>普通帐户(普通权限)：normal 密码：123456</p>
-        <p>备注：超级管理员可以操作用户和编辑用户权限，查看所有注册资源；普通帐户只能查看自己创建的资源或者被超级管理员分配的资源</p>
+        <p>备注：超级管理员可以操作用户和编辑用户权限，查看所有注册资源；<br>普通帐户只能查看自己创建的资源或者被超级管理员分配的资源</p>
         <span>备注：</span><a href="https://github.com/amanxu/xxl-job-admin-boot" style=""><u>Github 项目源码地址</u></a>
-      </div>-->
+      </div>
     </el-form>
   </div>
 </template>

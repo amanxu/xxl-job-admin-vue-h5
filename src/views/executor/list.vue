@@ -86,7 +86,7 @@
     </div>
 
     <el-dialog :title="dialogStatus=='create' ? '新增执行器' : '编辑执行器'" :visible.sync="dialogFormVisible" center>
-      <el-form :model="form" :rules="rules" ref="ruleForm">
+      <el-form :model="form" :rules="rules" ref="form">
         <el-form-item label="AppName" label-width="80px" prop="appName">
           <el-input v-model="form.appName" auto-complete="off" maxlength="180"
                     placeholder="请输入AppName"></el-input>
@@ -178,7 +178,7 @@
     watch: {},
     methods: {
       addForm() {
-        this.$refs['ruleForm'].validate((valid) => {
+        this.$refs['form'].validate((valid) => {
           if (valid) {
             create(this.form).then(res => {
               if (res.code === 200) {
