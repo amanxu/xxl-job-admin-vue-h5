@@ -201,7 +201,7 @@
         });
       },
       updateForm() {
-        this.$refs['ruleForm'].validate((valid) => {
+        this.$refs['form'].validate((valid) => {
           if (valid) {
             update(this.form).then(res => {
               if (res.code === 200) {
