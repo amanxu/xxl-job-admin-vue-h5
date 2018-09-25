@@ -86,6 +86,33 @@ export const constantRouterMap = [
         meta: {title: '日志列表'}
       }
     ]
+  },
+  {
+    path: '/article',
+    component: Layout,
+    redirect: '/article/create',
+    meta: {title: '文摘管理', icon: 'edit'},
+    alwaysShow: true,
+    children: [
+      {
+        path: 'create',
+        name: '发布文章',
+        component: () => import('@/views/article/create'),
+        meta: {title: '发布文章'}
+      }, {
+        path: 'edit/:id(\\d+)',
+        component: () => import('@/views/article/edit'),
+        name: '文章编辑',
+        meta: {title: '文章编辑', noCache: true},
+        hidden: true
+      }, {
+
+        path: 'list',
+        name: '文章列表',
+        component: () => import('@/views/article/list'),
+        meta: {title: '文章列表'}
+      }
+    ]
   }
 ]
 

@@ -18,8 +18,15 @@ module.exports = {
     notifyOnErrors: false,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
     proxyTable: {
+      '/art': {
+        target: "http://localhost:8086",//dev ip
+        changeOrigin: true,
+        pathRewrite: {
+          '^/art': ''
+        }
+      },
       '/xxl': {
-        target: "http://localhost:8088",//dev ip
+        target: "http://47.94.85.76:8080",//dev ip
         changeOrigin: true,
         pathRewrite: {
           '^/xxl': ''

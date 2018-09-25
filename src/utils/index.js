@@ -300,3 +300,4 @@ export function uniqueArr(arr) {
 }
 
 export const proxyPrefix = '/xxl'
+export const artPrefix = '/art'
