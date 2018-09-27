@@ -177,7 +177,7 @@
           userName: [{required: true, message: '请输入用户名', trigger: 'blur'}],
           realName: [{required: true, message: '请输入真实姓名', trigger: 'blur'}],
           userType: [{required: true, message: '请选择用户类型', trigger: 'blur'}],
-          phone: [{validator: checkPhone, trigger: 'blur'}],
+          phone: [{required: true, validator: checkPhone, trigger: 'blur'}],
           password: [
             {required: true, validator: validatePass, trigger: 'blur'}
           ],
