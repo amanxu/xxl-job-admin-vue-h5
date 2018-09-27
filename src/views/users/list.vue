@@ -84,15 +84,15 @@
     <el-dialog :title="dialogStatus=='create' ? '新增用户' : '编辑用户'" :visible.sync="dialogFormVisible" center>
       <el-form :model="userForm" :rules="rules" ref="userForm">
         <el-form-item label="用户名" label-width="80px" prop="userName">
-          <el-input v-model="userForm.userName" auto-complete="off" maxlength="180"
+          <el-input v-model="userForm.userName" auto-complete="off" maxlength="64"
                     placeholder="请输入用户名"></el-input>
         </el-form-item>
         <el-form-item label="姓名" label-width="80px" prop="realName">
-          <el-input v-model="userForm.realName" auto-complete="off" maxlength="180"
+          <el-input v-model="userForm.realName" auto-complete="off" maxlength="12"
                     placeholder="请输入真实姓名"></el-input>
         </el-form-item>
         <el-form-item label="手机号" label-width="80px" prop="phone">
-          <el-input v-model="userForm.phone" auto-complete="off" maxlength="16"
+          <el-input v-model.number="userForm.phone" auto-complete="off" maxlength="11"
                     placeholder="请输入手机号"></el-input>
         </el-form-item>
 
@@ -105,11 +105,11 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="密码" prop="pass">
-          <el-input type="password" v-model="userForm.password" auto-complete="off"></el-input>
+        <el-form-item label="密码" prop="password">
+          <el-input type="password" v-model="userForm.password" minlength="6" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="checkPass">
-          <el-input type="password" v-model="userForm.checkPass" auto-complete="off"></el-input>
+          <el-input type="password" v-model="userForm.checkPass" minlength="6" auto-complete="off"></el-input>
         </el-form-item>
 
       </el-form>
@@ -131,6 +131,19 @@
     props: {},
     components: {},
     data() {
+      var checkPhone = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('手机号不能为空'));
+        } else {
+          const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+          if (reg.test(value)) {
+            callback();
+          } else {
+            return callback(new Error('请输入正确的手机号'));
+          }
+        }
+      };
+
       var validatePass = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请输入密码'));
@@ -158,14 +171,14 @@
         headers: {},
         modifyData: '',
         userForm: {
-          id: '', userName: '', realName: '', phone: '', userType: null, password: '', checkPass: ''
+          id: '', userName: '', realName: '', phone: null, userType: null, password: '', checkPass: ''
         },
         rules: {
           userName: [{required: true, message: '请输入用户名', trigger: 'blur'}],
           realName: [{required: true, message: '请输入真实姓名', trigger: 'blur'}],
           userType: [{required: true, message: '请选择用户类型', trigger: 'blur'}],
-          phone: [{required: true, message: '手机号不能为空'}],
-          pass: [
+          phone: [{validator: checkPhone, trigger: 'blur'}],
+          password: [
             {required: true, validator: validatePass, trigger: 'blur'}
           ],
           checkPass: [
@@ -244,11 +257,10 @@
         });
       },
       userCreate() {
-        this.userForm = {
-          id: '', userName: '', realName: '', phone: '', userType: '',
-        }
+        this.userForm = {id: '', userName: '', realName: '', phone: null, userType: null, password: '', checkPass: ''}
         this.dialogFormVisible = true
         this.dialogStatus = 'create'
+        this.$refs['userForm'].resetFields()
       },
       getList() {
         getUserList(this.listQuery).then(res => {
@@ -279,6 +291,7 @@
             this.userForm.checkPass = content.password
             this.dialogFormVisible = true
             this.dialogStatus = 'update'
+            this.$refs['userForm'].resetFields()
           }
         })
       },
