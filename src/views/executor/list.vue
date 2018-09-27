@@ -228,6 +228,7 @@
         }
         this.dialogFormVisible = true
         this.dialogStatus = 'create'
+        this.$refs['form'].resetFields()
       },
       getList() {
         getGroupList(this.listQuery).then(res => {
@@ -251,6 +252,7 @@
         this.dialogFormVisible = true
         this.dialogStatus = 'update'
         this.form = row
+        this.$refs['form'].resetFields()
       },
       modifyComplete(data) {
         if (!data) return false

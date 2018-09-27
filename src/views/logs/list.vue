@@ -363,6 +363,7 @@
       },
       clearJobLogs() {
         this.clearLogDialog = true
+        this.$refs['clearForm'].resetFields()
       },
       exeClearLogs() {
         this.$refs['clearForm'].validate((valid) => {

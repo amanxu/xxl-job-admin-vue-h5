@@ -327,22 +327,13 @@
       },
       jobCreate() {
         this.jobForm = {
-          id: null,
-          jobGroup: null,
-          executorRouteStrategy: '',
-          glueType: null,
-          executorParam: '',
-          executorBlockStrategy: '',
-          author: '',
-          jobDesc: '',
-          jobCron: '',
-          executorHandler: '',
-          childJobId: null,
-          executorFailStrategy: '',
-          alarmEmail: ''
+          id: null, jobGroup: null, executorRouteStrategy: '', glueType: null,
+          executorParam: '', executorBlockStrategy: '', author: '', jobDesc: '', jobCron: '',
+          executorHandler: '', childJobId: null, executorFailStrategy: '', alarmEmail: ''
         }
         this.dialogFormVisible = true
         this.dialogType = 'create'
+        this.$refs['jobForm'].resetFields();
       },
       warnBeforeOperate(type, id) {
         this.$confirm(
@@ -476,6 +467,7 @@
         this.operateJobId = row.id
         this.dialogType = 'update'
         this.jobForm = row
+        this.$refs['jobForm'].resetFields()
       },
       editCompleted(state) {
         this.dialogFormVisible = false
