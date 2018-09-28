@@ -44,7 +44,7 @@ export default {
       return Object.keys(this.listObj).every(item => this.listObj[item].hasSuccess)
     },
     handleSubmit() {
-      alert(JSON.stringify(this.listObj))
+      /*alert(JSON.stringify(this.listObj))*/
       const arr = Object.keys(this.listObj).map(v => this.listObj[v])
       if (!this.checkAllSuccess()) {
         this.$message('请等待所有图片上传成功 或 出现了网络问题，请刷新页面重新上传！')
@@ -62,7 +62,7 @@ export default {
         if (this.listObj[objKeyArr[i]].uid === uid) {
           this.listObj[objKeyArr[i]].url = response.data
           this.listObj[objKeyArr[i]].hasSuccess = true
-          alert(JSON.stringify(this.listObj))
+          /*alert(JSON.stringify(this.listObj))*/
           return
         }
       }

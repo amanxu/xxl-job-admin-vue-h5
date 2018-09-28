@@ -22,8 +22,8 @@
             <div class="postInfo-container">
               <el-row>
                 <el-col :span="8">
-                  <el-form-item label-width="45px" label="作者:" class="postInfo-container-item">
-                    <el-select v-model="postForm.userName" :remote-method="getRemoteUserList" filterable remote
+                  <el-form-item label-width="45px" label="作者:" class="postInfo-container-item" prop="userName">
+                    <el-select v-model="postForm.userId" :remote-method="getRemoteUserList" filterable remote
                                placeholder="搜索用户">
                       <el-option v-for="item in userListOptions" :key="item.id" :label="item.userName"
                                  :value="item.id"/>
@@ -33,8 +33,7 @@
 
                 <el-col :span="10">
                   <el-form-item label-width="80px" label="发布时间:" class="postInfo-container-item">
-                    <el-date-picker v-model="postForm.publishTime" type="datetime" format="yyyy-MM-dd HH:mm:ss"
-                                    placeholder="选择日期时间"/>
+                    <el-date-picker v-model="postForm.publishTime" type="datetime" placeholder="选择日期时间"/>
                   </el-form-item>
                 </el-col>
 
@@ -92,7 +91,9 @@
     publishTime: undefined, // 前台展示时间
     id: undefined,
     allowComment: false,
-    sort: 0
+    sort: 0,
+    userName: '',
+    userId: undefined
   }
 
   export default {
@@ -136,10 +137,11 @@
         loading: false,
         userListOptions: [],
         rules: {
-          imgUri: [{validator: validateRequire}],
-          title: [{validator: validateRequire}],
+          imgUrl: [{validator: validateRequire}],
+          title: [{required: true, validator: validateRequire}],
           content: [{validator: validateRequire}],
-          sourceUri: [{validator: validateSourceUri, trigger: 'blur'}]
+          sourceUri: [{validator: validateSourceUri, trigger: 'blur'}],
+          userName: [{required: true, message: '请选择作者', trigger: 'blur'}]
         }
       }
     },
@@ -152,6 +154,7 @@
       if (this.isEdit) {
         const id = this.$route.params && this.$route.params.id
         this.fetchData(id)
+        this.getRemoteUserList('')
       } else {
         this.postForm = Object.assign({}, defaultForm)
       }
@@ -165,29 +168,33 @@
         })
       },
       submitForm() {
-        this.postForm.publishTime = parseInt(this.postForm.publishTime / 1000)
-        console.log(this.postForm)
+        for (let item of this.userListOptions) {
+          if (item.id === this.postForm.userId) {
+            this.postForm.userName = item.userName
+            break;
+          }
+        }
         alert(JSON.stringify(this.postForm))
         this.$refs.postForm.validate(valid => {
           if (valid) {
             this.loading = true
+            this.postForm.status = 'published'
             create(this.postForm).then(res => {
               if (res.code == 0) {
                 this.$notify({
                   title: '成功',
-                  message: '发布文章成功',
+                  message: '发布成功',
                   type: 'success',
                   duration: 2000
                 })
               } else {
                 this.$notify({
                   title: '失败',
-                  message: '发布文章失败',
+                  message: '发布失败',
                   type: 'error',
                   duration: 2000
                 })
               }
-              this.postForm.status = 'published'
               this.loading = false
             }).catch(function (err) {
               console.error(err)
@@ -199,6 +206,7 @@
         })
       },
       draftForm() {
+        this.postForm.status = 'draft'
         if (this.postForm.content.length === 0 || this.postForm.title.length === 0) {
           this.$message({
             message: '请填写必要的标题和内容',
@@ -206,11 +214,25 @@
           })
           return
         }
-        this.$message({
-          message: '保存成功',
-          type: 'success',
-          showClose: true,
-          duration: 1000
+        create(this.postForm).then(res => {
+          if (res.code == 0) {
+            this.$notify({
+              title: '成功',
+              message: '保存成功',
+              type: 'success',
+              duration: 1000
+            })
+          } else {
+            this.$notify({
+              title: '失败',
+              message: '保存失败',
+              type: 'error',
+              duration: 1000
+            })
+          }
+          this.loading = false
+        }).catch(function (err) {
+          console.error(err)
         })
         this.postForm.status = 'draft'
       },

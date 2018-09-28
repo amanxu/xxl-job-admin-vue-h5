@@ -10,7 +10,7 @@
 
       <el-table-column width="180px" align="center" label="发布时间">
         <template slot-scope="scope">
-          <span>{{ scope.row.publishTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ scope.row.publishTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</span>
         </template>
       </el-table-column>
 
