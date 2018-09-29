@@ -8,19 +8,34 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="180px" align="center" label="发布时间">
+      <el-table-column min-width="150px" label="标题">
+        <template slot-scope="scope">
+
+          <router-link :to="'/article/edit/'+scope.row.id" class="link-type">
+            <span>{{ scope.row.title }}</span>
+          </router-link>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="封面图" align="center" min-width="110">
+        <template slot-scope="scope">
+          <img :src="scope.row.imgUrl" :alt="scope.row.title" width="110" height="70">
+        </template>
+      </el-table-column>
+
+      <el-table-column width="160px" align="center" label="发布时间">
         <template slot-scope="scope">
           <span>{{ scope.row.publishTime | dateformat('YYYY-MM-DD HH:mm:ss')}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="120px" align="center" label="作者">
+      <el-table-column width="110px" align="center" label="作者">
         <template slot-scope="scope">
           <span>{{ scope.row.userName }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="100px" label="重要性">
+      <el-table-column width="110px" label="重要性">
         <template slot-scope="scope">
           <svg-icon v-for="n in +scope.row.sort" :key="n" icon-class="star" class="meta-item__icon"/>
         </template>
@@ -29,15 +44,6 @@
       <el-table-column class-name="status-col" label="状态" width="110">
         <template slot-scope="scope">
           <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column min-width="200px" label="标题">
-        <template slot-scope="scope">
-
-          <router-link :to="'/article/edit/'+scope.row.id" class="link-type">
-            <span>{{ scope.row.title }}</span>
-          </router-link>
         </template>
       </el-table-column>
 

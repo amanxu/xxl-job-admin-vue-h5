@@ -13,10 +13,14 @@
         <el-row>
 
           <el-col :span="24">
-            <el-form-item style="margin-bottom: 30px;text-align: start" label="标题:" prop="title">
+            <el-form-item style="margin-bottom: 20px;text-align: start" label="标题:" prop="title">
               <MDinput v-model="postForm.title" :maxlength="100" name="name" required>
                 标题
               </MDinput>
+            </el-form-item>
+
+            <el-form-item style="margin-bottom: 10px;margin-left: 15px" label-width="45px" label="封面图:" prop="imgUrl">
+              <Upload v-model="postForm.imgUrl" :fileList="fileList"/>
             </el-form-item>
 
             <div class="postInfo-container">
@@ -53,7 +57,7 @@
           </el-col>
         </el-row>
 
-        <el-form-item style="margin-bottom: 40px;" label-width="45px" label="摘要:">
+        <el-form-item style="margin-bottom: 20px;" label-width="45px" label="摘要:">
           <el-input :rows="1" v-model="postForm.summary" type="textarea" class="article-textarea" autosize
                     placeholder="请输入内容"/>
           <span v-show="contentShortLength" class="word-counter">{{ contentShortLength }}字</span>
@@ -61,10 +65,6 @@
 
         <div class="editor-container">
           <Tinymce ref="editor" :height="400" v-model="postForm.content"/>
-        </div>
-
-        <div style="margin-bottom: 20px;">
-          <Upload v-model="postForm.imgUrl"/>
         </div>
       </div>
     </el-form>
@@ -74,7 +74,7 @@
 
 <script>
   import Tinymce from '@/components/Tinymce'
-  import Upload from '@/components/Upload/singleImage3'
+  import Upload from '@/components/Upload/faceImage'
   import MDinput from '@/components/MDinput'
   import Sticky from '@/components/Sticky' // 粘性header组件
   import {validateURL} from '@/utils/validate'
@@ -137,12 +137,13 @@
         loading: false,
         userListOptions: [],
         rules: {
-          imgUrl: [{validator: validateRequire}],
+          imgUrl: [{required: true, validator: validateRequire}],
           title: [{required: true, validator: validateRequire}],
           content: [{validator: validateRequire}],
           sourceUri: [{validator: validateSourceUri, trigger: 'blur'}],
           userName: [{required: true, message: '请选择作者', trigger: 'blur'}]
-        }
+        },
+        fileList: [],
       }
     },
     computed: {
@@ -163,9 +164,15 @@
       fetchData(id) {
         detail(id).then(response => {
           this.postForm = response.data
+          this.initImgArr(this.postForm.imgUrl)
         }).catch(err => {
           console.log(err)
         })
+      },
+      initImgArr(imgInfo) {
+        const url = imgInfo
+        const name = imgInfo.substr(imgInfo.lastIndexOf('/') + 1)
+        this.fileList.push({url, name})
       },
       submitForm() {
         for (let item of this.userListOptions) {
@@ -174,7 +181,6 @@
             break;
           }
         }
-        alert(JSON.stringify(this.postForm))
         this.$refs.postForm.validate(valid => {
           if (valid) {
             this.loading = true
@@ -196,6 +202,8 @@
                 })
               }
               this.loading = false
+              // TODO 跳转到列表页面
+              this.$router.push('/article/list')
             }).catch(function (err) {
               console.error(err)
             })
@@ -231,6 +239,8 @@
             })
           }
           this.loading = false
+          // TODO 跳转到列表页面
+          this.$router.push('/article/list')
         }).catch(function (err) {
           console.error(err)
         })
@@ -256,9 +266,11 @@
       .postInfo-container {
         position: relative;
         @include clearfix;
-        margin-bottom: 10px;
         .postInfo-container-item {
           float: left;
+        }
+        .el-form-item {
+          margin-bottom: 10px;
         }
       }
       .editor-container {
